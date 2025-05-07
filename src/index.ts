@@ -552,8 +552,8 @@ let socket: Socket;
 const token = "meu_token_secreto";
 
 function connectWebSocket(): void {
-  // const ws_url = "https://rdt-tracker-server.onrender.com"
-  const ws_url = "http://localhost:3000";
+  const ws_url = "https://rdt-tracker-server.onrender.com";
+  //   const ws_url = "http://localhost:3000";
   socket = io(ws_url, {
     query: { token },
   });
