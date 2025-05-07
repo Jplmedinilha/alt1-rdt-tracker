@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RDT Loot Tracker</title>
+  <!-- <link rel="stylesheet" href="style.css" /> -->
+
+  <script src="https://www.unpkg.com/alt1/dist/base/index.js"></script>
+  <script src="https://www.unpkg.com/alt1/dist/ocr/index.js"></script>
+  <script src="https://www.unpkg.com/alt1/dist/chatbox/index.js"></script>
+
+  <script type="text/javascript" src="https://runeapps.org/alt1lib.js"></script>
+  <script type="text/javascript" src="https://runeapps.org/imagedetect.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/string-similarity/umd/string-similarity.min.js"></script>
+ 
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+
+  <!-- <script src="app.js"></script> -->
+
+</head>
+<body>
+  <div class="container">
+    <div class="tab-container">
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-tab="Slayer">
+            <!-- <img src="img/Slayer-icon.png" alt="Espada"> -->
+            Slayer
+          </button>
+          <button class="tab-btn" data-tab="Seren">
+            <!-- <img src="img/Grace_of_the_elves.png" alt="Espada"> -->
+            Seren
+          </button>
+        </div>
+      
+        <div id="Slayer" class="tab-content active">
+            <div class="table-wrapper">
+              <table class="dropTable">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Hits</th>
+                    <th>Qty</th>
+                  </tr>
+                </thead>
+                <tbody id="lootTableBodySlayer">
+                  <!-- Slayer loot rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div id="Seren" class="tab-content">
+            <div class="table-wrapper">
+              <table class="dropTable">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Hits</th>
+                    <th>Qty</th>
+                  </tr>
+                </thead>
+                <tbody id="lootTableBodySeren">
+                  <!-- Seren loot rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+
+        <div class="button-group">
+          <button id="refreshButton" title="Refresh WS" class="blue">
+            <svg viewBox="0 0 24 24">
+              <path d="M17.65 6.35A7.95 7.95 0 0 0 12 4V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 13.65-6.65z"/>
+            </svg>
+        </button>
+          
+          <button id="importButton" class="green" title="Import CSV">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 20h14v-2H5v2zm7-18L5.33 9h3.84v4h4.66v-4h3.84L12 2z"/>
+            </svg>
+          </button>
+    
+          <button id="exportButton" class="green" title="Export CSV">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 15v4H5v-4H3v6h18v-6h-2zm-7-2l5-5h-3V3h-4v5H7l5 5z"/>
+            </svg>
+          </button>
+          <button id="resetButton" title="Reset data" class="red">
+              <svg viewBox="0 0 24 24">
+              <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5h-11L5 9zm3-5h8v2H8V4z"/>
+              </svg>
+          </button>
+        </div>
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+          <p>Are you sure you want to wipe all data? This cannot be undone</p>
+          <button id="confirmReset">Yes</button>
+          <button id="cancelReset">No</button>
+        </div>
+      </div>
+
+    <div class="progress-container">
+        <progress id="progress" value="0" max="16000"></progress>
+      
+        <div class="tooltip-wrapper">
+          <div class="progress-display">
+            <img src="img/rdt.png" alt="RDT Icon" class="icon">
+            <span id="progressLabel">0 / 16,000</span>
+            <img src="img/hsr.png" alt="HSR Icon" class="icon">
+          </div>
+          <span class="tooltip">
+            <strong>Hazelmere's Signet Ring Drop Mechanics (per RDT roll):</strong>
+            <ul>
+              <li>1/16 chance to access the Super Rare Table (SRT)</li>
+              <li>1/100 chance to access the HSR Subtable</li>
+              <li>1/10 chance to receive HSR (with Tier 4 Luck)</li>
+            </ul>
+            <p>Total estimated chance: <strong>1 / 16,000</strong> per RDT roll.</p>
+            <p style="margin-top: 8px; font-size: 0.75em; color: #bbb;">
+              Disclaimer: These drop rates are community estimates and have not been officially confirmed by Jagex.
+            </p>
+          </span>
+        </div>
+      </div>
+      <div class="dev-msg">
+        <small>Made with ❤️ by Andtank</small>
+      </div>
+      <script src="./main.js"></script>
+  
+</body>
+</html>

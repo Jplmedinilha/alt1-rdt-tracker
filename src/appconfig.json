@@ -1,0 +1,16 @@
+{
+  "appName": "RDT-Tracker",
+  "description": "Rare drop table tracker for runescape 3",
+  "appUrl": "./index.html",
+  "configUrl": "./appconfig.json",
+  "iconUrl": "./icon.png",
+  "defaultWidth": 500,
+  "defaultHeight": 500,
+  "minWidth": 500,
+  "minHeight": 250,
+  "maxWidth": 500,
+  "maxHeight": 1500,
+  "requestHandlers": [],
+  "activators": [],
+  "permissions": "pixel,gamestate,overlay"
+}
