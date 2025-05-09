@@ -11691,8 +11691,8 @@ function loadEvents() {
 var socket;
 var token = "meu_token_secreto";
 function connectWebSocket() {
-    // const ws_url = "https://rdt-tracker-server.onrender.com";
-    var ws_url = "http://localhost:3000";
+    var ws_url = "https://rdt-tracker-server.onrender.com";
+    // const ws_url = "http://localhost:3000";
     socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_1__.io)(ws_url, {
         query: { token: token },
     });
