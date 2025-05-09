@@ -147,6 +147,16 @@ if (window.alt1) {
   ).innerHTML = `Alt1 not detected, click <a href='${addappurl}'>here</a> to add this app to Alt1`;
 }
 
+const currData = {
+  elderOverload: false,
+  darkness: false,
+  aura: false,
+  bonfireBoost: false,
+  prayerRenewActive: false,
+  soulSplit: false,
+  corruption: false,
+};
+
 // ################# Chatbox reader area #################
 
 const chatBoxColor = a1lib.mixColor(105, 105, 105);
@@ -295,58 +305,80 @@ let findBar = setInterval(function () {
     );
     setInterval(function () {
       readBar();
-    }, 500);
+    }, 600);
   }
 }, 1000);
 
 function readBar() {
-  pushActionBar(actionbar.read());
+  // pushActionBar(actionbar.read());
+  const data = {
+    ...actionbar.read(),
+    buffs: currData,
+  } as any;
+  pushActionBar(data);
 }
 
 // ################# buffs reader area #################
 
-// const buffBarColor = a1lib.mixColor(4, 192, 0);
+const buffBarColor = a1lib.mixColor(4, 192, 0);
 
-// const buffs = new BuffReader();
+const buffs = new BuffReader();
 
-// buffs.debuffs = false;
+buffs.debuffs = false;
 
-// var buffImages = a1lib.webpackImages({
-//   elderOverload: require("./img/Elder_Overload-noborder.data.png"),
-//   darkness: require("./img/Darkness-noborder.data.png"),
-//   aura: require("./img/Aura-noborder.data.png"),
-//   bonfireBoost: require("./img/Bonfire_Boost-noborder.data.png"),
-//   prayerRenewActive: require("./img/Prayer_Renew_Active-noborder.data.png"),
-//   soulSplit: require("./img/Soul_Split-noborder.data.png"),
-// });
+var buffImages = a1lib.webpackImages({
+  elderOverload: require("./img/Elder_Overload-noborder.data.png"),
+  darkness: require("./img/Darkness-noborder.data.png"),
+  aura: require("./img/Aura-noborder.data.png"),
+  bonfireBoost: require("./img/Bonfire_Boost-noborder.data.png"),
+  prayerRenewActive: require("./img/Prayer_Renew_Active-noborder.data.png"),
+  soulSplit: require("./img/Soul_Split-noborder.data.png"),
+  corruption: require("./img/corruption.data.png"),
+});
 
-// let findBuffs = setInterval(function () {
-//   if (!window.alt1) {
-//     clearInterval(findBuffs);
-//     return;
-//   }
-//   if (buffs.pos === null) buffs.find();
-//   else {
-//     clearInterval(findBuffs);
-//     alt1.overLayRect(buffBarColor, buffs.pos.x, buffs.pos.y, 300, 80, 2000, 2);
-//     setInterval(function () {
-//       readBuffs();
-//     }, 1000);
-//   }
-// }, 1000);
+let findBuffs = setInterval(function () {
+  if (!window.alt1) {
+    clearInterval(findBuffs);
+    return;
+  }
+  if (buffs.pos === null) buffs.find();
+  else {
+    clearInterval(findBuffs);
+    alt1.overLayRect(buffBarColor, buffs.pos.x, buffs.pos.y, 300, 80, 2000, 2);
+    setInterval(function () {
+      readBuffs();
+    }, 1000);
+  }
+}, 1000);
 
-// function readBuffs() {
-//   const buffsReader = buffs.read();
-//   for (let testid in buffImages.raw) {
-//     let img = new ImgRefData(buffImages[testid]);
-//     let imgdata = img.toData();
-//     imgdata.show();
-//     let reader = new BuffReader();
-//     reader.debuffs = false;
-//     let pos = reader.find(img);
-//     console.log(pos);
-//   }
-// }
+function readBuffs() {
+  const buffsReader = buffs.read();
+  const threshold = 100;
+
+  for (let testid in buffImages) {
+    const img = new ImgRefData(buffImages[testid]);
+    const imgdata = img.toData();
+    imgdata.show();
+
+    let found = false;
+
+    for (const buff of buffsReader) {
+      const result = buff.countMatch(imgdata, false);
+
+      if (result.passed > threshold) {
+        found = true;
+        currData[testid] = true;
+        // console.log(`✅ '${testid}'`);
+        break;
+      }
+    }
+
+    if (!found) {
+      currData[testid] = false;
+      // console.log(`❌ '${testid}'`);
+    }
+  }
+}
 
 // ######### localStorage #########
 
@@ -552,8 +584,8 @@ let socket: Socket;
 const token = "meu_token_secreto";
 
 function connectWebSocket(): void {
-  const ws_url = "https://rdt-tracker-server.onrender.com";
-  //   const ws_url = "http://localhost:3000";
+  // const ws_url = "https://rdt-tracker-server.onrender.com";
+  const ws_url = "http://localhost:3000";
   socket = io(ws_url, {
     query: { token },
   });

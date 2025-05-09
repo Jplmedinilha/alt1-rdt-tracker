@@ -3251,6 +3251,448 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_sharp__;
 
 /***/ }),
 
+/***/ "../node_modules/alt1/dist/buffs/index.js":
+/*!************************************************!*\
+  !*** ../node_modules/alt1/dist/buffs/index.js ***!
+  \************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(true)
+		module.exports = factory(__webpack_require__(/*! alt1/base */ "../node_modules/alt1/dist/base/index.js"), __webpack_require__(/*! alt1/ocr */ "../node_modules/alt1/dist/ocr/index.js"));
+	else {}
+})(globalThis, (__WEBPACK_EXTERNAL_MODULE_alt1_base__, __WEBPACK_EXTERNAL_MODULE_alt1_ocr__) => {
+return /******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/buffs/imgs/buffborder.data.png":
+/*!********************************************!*\
+  !*** ./src/buffs/imgs/buffborder.data.png ***!
+  \********************************************/
+/***/ ((module, __unused_webpack_exports, __nested_webpack_require_885__) => {
+
+module.exports=(__nested_webpack_require_885__(/*! alt1/base */ "alt1/base").ImageDetect.imageDataFromBase64)("iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAAAW5vUEUAYtdMlAAAAARub1BFAAAAAEEgjiIAAAAJbm9QRQAAAAAAAAAAAKGKctUAAABCSURBVEhL7daxDQAgDANBwxasxmCsS4jECE8K5JdcX+s219iqKrGTXi+dfs2SjCEZQzKGZAzJGJIxJGNI/2KFj1gK6ntTCO2Nfp8AAAAASUVORK5CYII=")
+
+/***/ }),
+
+/***/ "./src/buffs/imgs/debuffborder.data.png":
+/*!**********************************************!*\
+  !*** ./src/buffs/imgs/debuffborder.data.png ***!
+  \**********************************************/
+/***/ ((module, __unused_webpack_exports, __nested_webpack_require_1504__) => {
+
+module.exports=(__nested_webpack_require_1504__(/*! alt1/base */ "alt1/base").ImageDetect.imageDataFromBase64)("iVBORw0KGgoAAAANSUhEUgAAABsAAAAbCAYAAACN1PRVAAAAAW5vUEUAYtdMlAAAAARub1BFAAAAAEEgjiIAAAAJbm9QRQAAAAAAAAAAAKGKctUAAABFSURBVEhL7daxDQAgDANBm5XYfwOYyUgoI5gUyFc51bfhAoQmNzYl1v3MJjVqt0jMIjGLxCwSs0jMIjGLxCz+jTV+xMAB3/oJlYh5IBUAAAAASUVORK5CYII=")
+
+/***/ }),
+
+/***/ "./src/buffs/index.ts":
+/*!****************************!*\
+  !*** ./src/buffs/index.ts ***!
+  \****************************/
+/***/ (function(__unused_webpack_module, exports, __nested_webpack_require_2063__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.BuffInfo = exports.Buff = void 0;
+const a1lib = __importStar(__nested_webpack_require_2063__(/*! alt1/base */ "alt1/base"));
+const OCR = __importStar(__nested_webpack_require_2063__(/*! alt1/ocr */ "alt1/ocr"));
+const base_1 = __nested_webpack_require_2063__(/*! alt1/base */ "alt1/base");
+var imgs = (0, base_1.webpackImages)({
+    buff: __nested_webpack_require_2063__(/*! ./imgs/buffborder.data.png */ "./src/buffs/imgs/buffborder.data.png"),
+    debuff: __nested_webpack_require_2063__(/*! ./imgs/debuffborder.data.png */ "./src/buffs/imgs/debuffborder.data.png"),
+});
+var font = __nested_webpack_require_2063__(/*! ../fonts/pixel_8px_digits.fontmeta.json */ "./src/fonts/pixel_8px_digits.fontmeta.json");
+function negmod(a, b) {
+    return ((a % b) + b) % b;
+}
+class Buff {
+    constructor(buffer, x, y, isdebuff) {
+        this.buffer = buffer;
+        this.bufferx = x;
+        this.buffery = y;
+        this.isdebuff = isdebuff;
+    }
+    readArg(type) {
+        return BuffReader.readArg(this.buffer, this.bufferx + 2, this.buffery + 23, type);
+    }
+    readTime() {
+        return BuffReader.readTime(this.buffer, this.bufferx + 2, this.buffery + 23);
+    }
+    compareBuffer(img) {
+        return BuffReader.compareBuffer(this.buffer, this.bufferx + 1, this.buffery + 1, img);
+    }
+    countMatch(img, aggressive) {
+        return BuffReader.countMatch(this.buffer, this.bufferx + 1, this.buffery + 1, img, aggressive);
+    }
+}
+exports.Buff = Buff;
+class BuffReader {
+    constructor() {
+        this.pos = null;
+        this.debuffs = false;
+    }
+    find(img) {
+        if (!img) {
+            img = a1lib.captureHoldFullRs();
+        }
+        if (!img) {
+            return null;
+        }
+        var poslist = img.findSubimage(this.debuffs ? imgs.debuff : imgs.buff);
+        if (poslist.length == 0) {
+            return null;
+        }
+        var grids = [];
+        for (var a in poslist) {
+            var ongrid = false;
+            for (var b in grids) {
+                if (negmod(grids[b].x - poslist[a].x, BuffReader.gridsize) == 0 && negmod(grids[b].x - poslist[a].x, BuffReader.gridsize) == 0) {
+                    grids[b].x = Math.min(grids[b].x, poslist[a].x);
+                    grids[b].y = Math.min(grids[b].y, poslist[a].y);
+                    grids[b].n++;
+                    ongrid = true;
+                    break;
+                }
+            }
+            if (!ongrid) {
+                grids.push({ x: poslist[a].x, y: poslist[a].y, n: 1 });
+            }
+        }
+        var max = 0;
+        var above2 = 0;
+        var best = null;
+        for (var a in grids) {
+            console.log("buff grid [" + grids[a].x + "," + grids[a].y + "], n:" + grids[a].n);
+            if (grids[a].n > max) {
+                max = grids[a].n;
+                best = grids[a];
+            }
+            if (grids[a].n >= 2) {
+                above2++;
+            }
+        }
+        if (above2 > 1) {
+            console.log("Warning, more than one possible buff bar location");
+        }
+        if (!best) {
+            return null;
+        }
+        this.pos = { x: best.x, y: best.y, maxhor: 5, maxver: 1 };
+        return true;
+    }
+    getCaptRect() {
+        if (!this.pos) {
+            return null;
+        }
+        return new a1lib.Rect(this.pos.x, this.pos.y, (this.pos.maxhor + 1) * BuffReader.gridsize, (this.pos.maxver + 1) * BuffReader.gridsize);
+    }
+    read(buffer) {
+        if (!this.pos) {
+            throw new Error("no pos");
+        }
+        var r = [];
+        var rect = this.getCaptRect();
+        if (!rect) {
+            return null;
+        }
+        if (!buffer) {
+            buffer = a1lib.capture(rect.x, rect.y, rect.width, rect.height);
+        }
+        var maxhor = 0;
+        var maxver = 0;
+        for (var ix = 0; ix <= this.pos.maxhor; ix++) {
+            for (var iy = 0; iy <= this.pos.maxver; iy++) {
+                var x = ix * BuffReader.gridsize;
+                var y = iy * BuffReader.gridsize;
+                //Have to require exact match here as we get transparency bs otherwise
+                var match = buffer.pixelCompare((this.debuffs ? imgs.debuff : imgs.buff), x, y) == 0;
+                if (!match) {
+                    break;
+                }
+                r.push(new Buff(buffer, x, y, this.debuffs));
+                maxhor = Math.max(maxhor, ix);
+                maxver = Math.max(maxver, iy);
+            }
+        }
+        this.pos.maxhor = Math.max(5, maxhor + 2);
+        this.pos.maxver = Math.max(1, maxver + 1);
+        return r;
+    }
+    static compareBuffer(buffer, ox, oy, buffimg) {
+        var r = BuffReader.countMatch(buffer, ox, oy, buffimg, true);
+        if (r.failed > 0) {
+            return false;
+        }
+        if (r.tested < 50) {
+            return false;
+        }
+        return true;
+    }
+    static countMatch(buffer, ox, oy, buffimg, agressive) {
+        var r = { tested: 0, failed: 0, skipped: 0, passed: 0 };
+        var data1 = buffer.data;
+        var data2 = buffimg.data;
+        //var debug = new ImageData(buffimg.width, buffimg.height);
+        for (var y = 0; y < buffimg.height; y++) {
+            for (var x = 0; x < buffimg.width; x++) {
+                var i1 = buffer.pixelOffset(ox + x, oy + y);
+                var i2 = buffimg.pixelOffset(x, y);
+                //debug.data[i2] = 255; debug.data[i2 + 1] = debug.data[i2 + 2] = 0; debug.data[i2 + 3] = 255;
+                if (data2[i2 + 3] != 255) {
+                    r.skipped++;
+                    continue;
+                } //transparent buff pixel
+                if (data1[i1] == 255 && data1[i1 + 1] == 255 && data1[i1 + 2] == 255) {
+                    r.skipped++;
+                    continue;
+                } //white pixel - part of buff time text
+                if (data1[i1] == 0 && data1[i1 + 1] == 0 && data1[i1 + 2] == 0) {
+                    r.skipped++;
+                    continue;
+                } //black pixel - part of buff time text
+                var d = a1lib.ImageDetect.coldif(data1[i1], data1[i1 + 1], data1[i1 + 2], data2[i2], data2[i2 + 1], data2[i2 + 2], 255);
+                r.tested++;
+                //debug.data[i2] = debug.data[i2 + 1] = debug.data[i2 + 2] = d * 10;
+                if (d > 35) {
+                    //qw(pixelschecked); debug.show();
+                    r.failed++;
+                    if (agressive) {
+                        return r;
+                    }
+                }
+                else {
+                    r.passed++;
+                }
+            }
+        }
+        //debug.show(); qw(pixelschecked);
+        return r;
+    }
+    static isolateBuffer(buffer, ox, oy, buffimg) {
+        var count = BuffReader.countMatch(buffer, ox, oy, buffimg);
+        if (count.passed < 50) {
+            return;
+        }
+        var removed = 0;
+        var data1 = buffer.data;
+        var data2 = buffimg.data;
+        //var debug = new ImageData(buffimg.width, buffimg.height);
+        for (var y = 0; y < buffimg.height; y++) {
+            for (var x = 0; x < buffimg.width; x++) {
+                var i1 = buffer.pixelOffset(ox + x, oy + y);
+                var i2 = buffimg.pixelOffset(x, y);
+                //debug.data[i2] = 255; debug.data[i2 + 1] = debug.data[i2 + 2] = 0; debug.data[i2 + 3] = 255;
+                if (data2[i2 + 3] != 255) {
+                    continue;
+                } //transparent buff pixel
+                //==== new buffer has text on it ====
+                if (data1[i1] == 255 && data1[i1 + 1] == 255 && data1[i1 + 2] == 255 || data1[i1] == 0 && data1[i1 + 1] == 0 && data1[i1 + 2] == 0) {
+                    continue;
+                }
+                //==== old buf has text on it, use the new one ====
+                if (data2[i2] == 255 && data2[i2 + 1] == 255 && data2[i2 + 2] == 255 || data2[i2] == 0 && data2[i2 + 1] == 0 && data2[i2 + 2] == 0) {
+                    data2[i2 + 0] = data1[i1 + 0];
+                    data2[i2 + 1] = data1[i1 + 1];
+                    data2[i2 + 2] = data1[i1 + 2];
+                    data2[i2 + 3] = data1[i1 + 3];
+                    removed++;
+                }
+                var d = a1lib.ImageDetect.coldif(data1[i1], data1[i1 + 1], data1[i1 + 2], data2[i2], data2[i2 + 1], data2[i2 + 2], 255);
+                //debug.data[i2] = debug.data[i2 + 1] = debug.data[i2 + 2] = d * 10;
+                if (d > 5) {
+                    //qw(pixelschecked); debug.show();
+                    data2[i2 + 0] = data2[i2 + 1] = data2[i2 + 2] = data2[i2 + 3] = 0;
+                    removed++;
+                }
+            }
+        }
+        //debug.show(); qw(pixelschecked);
+        if (removed > 0) {
+            console.log(removed + " pixels remove from buff template image");
+        }
+    }
+    static readArg(buffer, ox, oy, type) {
+        var lines = [];
+        for (var dy = -10; dy < 10; dy += 10) { //the timer can be spread to a second line at certain times (229m)
+            var result = OCR.readLine(buffer, font, [255, 255, 255], ox, oy + dy, true);
+            if (result.text) {
+                lines.push(result.text);
+            }
+        }
+        var r = { time: 0, arg: "" };
+        if (type == "timearg" && lines.length > 1) {
+            r.arg = lines.pop();
+        }
+        var str = lines.join("");
+        if (type == "arg") {
+            r.arg = str;
+        }
+        else {
+            var m;
+            if (m = str.match(/^(\d+)hr($|\s?\()/i)) {
+                r.time = +m[1] * 60 * 60;
+            }
+            else if (m = str.match(/^(\d+)m($|\s?\()/i)) {
+                r.time = +m[1] * 60;
+            }
+            else if (m = str.match(/^(\d+)($|\s?\()/)) {
+                r.time = +m[1];
+            }
+        }
+        return r;
+    }
+    static readTime(buffer, ox, oy) {
+        return this.readArg(buffer, ox, oy, "time").time;
+    }
+    static matchBuff(state, buffimg) {
+        for (var a in state) {
+            if (state[a].compareBuffer(buffimg)) {
+                return state[a];
+            }
+        }
+        return null;
+    }
+    static matchBuffMulti(state, buffinfo) {
+        if (buffinfo.final) { //cheap way if we known exactly what we're searching for
+            return BuffReader.matchBuff(state, buffinfo.imgdata);
+        }
+        else { //expensive way if we are not sure the template is final
+            var bestindex = -1;
+            var bestscore = 0;
+            if (buffinfo.imgdata) {
+                for (var a = 0; a < state.length; a++) {
+                    var count = BuffReader.countMatch(state[a].buffer, state[a].bufferx + 1, state[a].buffery + 1, buffinfo.imgdata, false);
+                    if (count.passed > bestscore) {
+                        bestscore = count.passed;
+                        bestindex = a;
+                    }
+                }
+            }
+            if (bestscore < 50) {
+                return null;
+            }
+            //update the isolated buff
+            if (buffinfo.canimprove) {
+                BuffReader.isolateBuffer(state[bestindex].buffer, state[bestindex].bufferx + 1, state[bestindex].buffery + 1, buffinfo.imgdata);
+            }
+            return state[bestindex];
+        }
+    }
+}
+BuffReader.buffsize = 27;
+BuffReader.gridsize = 30;
+exports["default"] = BuffReader;
+class BuffInfo {
+    constructor(imgdata, debuff, id, canimprove) {
+        this.imgdata = imgdata;
+        this.isdebuff = debuff;
+        this.buffid = id;
+        this.final = !!id && !canimprove;
+        this.canimprove = canimprove;
+    }
+}
+exports.BuffInfo = BuffInfo;
+
+
+/***/ }),
+
+/***/ "alt1/base":
+/*!**************************************************************************************************!*\
+  !*** external {"root":"A1lib","commonjs2":"alt1/base","commonjs":"alt1/base","amd":"alt1/base"} ***!
+  \**************************************************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = __WEBPACK_EXTERNAL_MODULE_alt1_base__;
+
+/***/ }),
+
+/***/ "alt1/ocr":
+/*!*********************************************************************************************!*\
+  !*** external {"root":"OCR","commonjs2":"alt1/ocr","commonjs":"alt1/ocr","amd":"alt1/ocr"} ***!
+  \*********************************************************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = __WEBPACK_EXTERNAL_MODULE_alt1_ocr__;
+
+/***/ }),
+
+/***/ "./src/fonts/pixel_8px_digits.fontmeta.json":
+/*!**************************************************!*\
+  !*** ./src/fonts/pixel_8px_digits.fontmeta.json ***!
+  \**************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"chars":[{"width":7,"bonus":120,"chr":"0","pixels":[0,2,255,255,0,3,255,255,0,4,255,255,0,5,255,255,1,1,255,255,1,3,255,0,1,4,255,0,1,5,255,0,1,6,255,255,2,0,255,255,2,2,255,0,2,7,255,255,3,1,255,255,3,6,255,255,3,8,255,0,4,2,255,255,4,3,255,255,4,4,255,255,4,5,255,255,4,7,255,0,5,3,255,0,5,4,255,0,5,5,255,0,5,6,255,0],"secondary":false},{"width":4,"bonus":95,"chr":"1","pixels":[0,1,255,255,0,7,255,255,1,0,255,255,1,1,255,255,1,2,255,255,1,3,255,255,1,4,255,255,1,5,255,255,1,6,255,255,1,7,255,255,1,8,255,0,2,1,255,0,2,2,255,0,2,3,255,0,2,4,255,0,2,5,255,0,2,6,255,0,2,7,255,255,2,8,255,0],"secondary":false},{"width":7,"bonus":140,"chr":"2","pixels":[0,1,255,255,0,6,255,255,0,7,255,255,1,0,255,255,1,2,255,0,1,5,255,255,1,7,255,255,1,8,255,0,2,0,255,255,2,1,255,0,2,4,255,255,2,6,255,0,2,7,255,255,2,8,255,0,3,0,255,255,3,1,255,0,3,3,255,255,3,5,255,0,3,7,255,255,3,8,255,0,4,1,255,255,4,2,255,255,4,4,255,0,4,7,255,255,4,8,255,0,5,2,255,0,5,3,255,0,5,8,255,0],"secondary":false},{"width":6,"bonus":115,"chr":"3","pixels":[0,1,255,255,0,6,255,255,1,0,255,255,1,2,255,0,1,3,255,255,1,7,255,255,2,0,255,255,2,1,255,0,2,3,255,255,2,4,255,0,2,7,255,255,2,8,255,0,3,1,255,255,3,2,255,255,3,4,255,255,3,5,255,255,3,6,255,255,3,8,255,0,4,2,255,0,4,3,255,0,4,5,255,0,4,6,255,0,4,7,255,0],"secondary":false},{"width":5,"bonus":110,"chr":"4","pixels":[0,0,255,255,0,1,255,255,0,2,255,255,0,3,255,255,0,4,255,255,0,5,255,255,1,1,255,0,1,2,255,0,1,3,255,0,1,4,255,0,1,5,255,255,1,6,255,0,2,3,255,255,2,4,255,255,2,5,255,255,2,6,255,255,2,7,255,255,3,4,255,0,3,5,255,255,3,6,255,0,3,7,255,0,3,8,255,0],"secondary":false},{"width":6,"bonus":135,"chr":"5","pixels":[0,0,255,255,0,1,255,255,0,2,255,255,0,3,255,255,0,6,255,255,1,0,255,255,1,1,255,0,1,2,255,0,1,3,255,255,1,4,255,0,1,7,255,255,2,0,255,255,2,1,255,0,2,3,255,255,2,4,255,0,2,7,255,255,2,8,255,0,3,0,255,255,3,1,255,0,3,4,255,255,3,5,255,255,3,6,255,255,3,8,255,0,4,1,255,0,4,5,255,0,4,6,255,0,4,7,255,0],"secondary":false},{"width":7,"bonus":160,"chr":"6","pixels":[0,2,255,255,0,3,255,255,0,4,255,255,0,5,255,255,0,6,255,255,1,1,255,255,1,3,255,0,1,4,255,255,1,5,255,0,1,6,255,0,1,7,255,255,2,0,255,255,2,2,255,0,2,3,255,255,2,5,255,0,2,7,255,255,2,8,255,0,3,0,255,255,3,1,255,0,3,3,255,255,3,4,255,0,3,7,255,255,3,8,255,0,4,1,255,255,4,4,255,255,4,5,255,255,4,6,255,255,4,8,255,0,5,2,255,0,5,5,255,0,5,6,255,0,5,7,255,0],"secondary":false},{"width":6,"bonus":105,"chr":"7","pixels":[0,0,255,255,0,6,255,255,0,7,255,255,1,0,255,255,1,1,255,0,1,4,255,255,1,5,255,255,1,7,255,0,1,8,255,0,2,0,255,255,2,1,255,0,2,2,255,255,2,3,255,255,2,5,255,0,2,6,255,0,3,0,255,255,3,1,255,255,3,3,255,0,3,4,255,0,4,1,255,0,4,2,255,0],"secondary":false},{"width":7,"bonus":170,"chr":"8","pixels":[0,1,255,255,0,2,255,255,0,4,255,255,0,5,255,255,0,6,255,255,1,0,255,255,1,2,255,0,1,3,255,255,1,5,255,0,1,6,255,0,1,7,255,255,2,0,255,255,2,1,255,0,2,3,255,255,2,4,255,0,2,7,255,255,2,8,255,0,3,0,255,255,3,1,255,0,3,3,255,255,3,4,255,0,3,7,255,255,3,8,255,0,4,1,255,255,4,2,255,255,4,4,255,255,4,5,255,255,4,6,255,255,4,8,255,0,5,2,255,0,5,3,255,0,5,5,255,0,5,6,255,0,5,7,255,0],"secondary":false},{"width":7,"bonus":130,"chr":"9","pixels":[0,1,255,255,0,2,255,255,1,0,255,255,1,2,255,0,1,3,255,255,2,0,255,255,2,1,255,0,2,4,255,255,3,0,255,255,3,1,255,0,3,4,255,255,3,5,255,0,4,1,255,255,4,2,255,255,4,3,255,255,4,4,255,255,4,5,255,255,4,6,255,255,4,7,255,255,5,2,255,0,5,3,255,0,5,4,255,0,5,5,255,0,5,6,255,0,5,7,255,0,5,8,255,0],"secondary":false},{"width":7,"bonus":130,"chr":"m","pixels":[0,4,255,255,0,5,255,255,0,6,255,255,0,7,255,255,1,3,255,255,1,5,255,0,1,6,255,0,1,7,255,0,1,8,255,0,2,4,255,255,2,5,255,255,2,6,255,255,2,7,255,255,3,3,255,255,3,5,255,0,3,6,255,0,3,7,255,0,3,8,255,0,4,4,255,255,4,5,255,255,4,6,255,255,4,7,255,255,5,5,255,0,5,6,255,0,5,7,255,0,5,8,255,0],"secondary":false},{"width":3,"bonus":80,"chr":"(","pixels":[0,1,255,255,0,2,255,255,0,3,255,255,0,4,255,255,0,5,255,255,0,6,255,255,0,7,255,255,1,0,255,255,1,2,255,0,1,3,255,0,1,4,255,0,1,5,255,0,1,6,255,0,1,7,255,0,1,8,255,255,2,1,255,0],"secondary":false},{"width":2,"bonus":70,"chr":")","pixels":[0,1,255,255,0,2,255,255,0,3,255,255,0,4,255,255,0,5,255,255,0,6,255,255,0,7,255,255,1,2,255,0,1,3,255,0,1,4,255,0,1,5,255,0,1,6,255,0,1,7,255,0,1,8,255,0],"secondary":false},{"width":6,"bonus":135,"chr":"h","pixels":[0,0,255,255,0,1,255,255,0,2,255,255,0,3,255,255,0,4,255,255,0,5,255,255,0,6,255,255,0,7,255,255,1,1,255,0,1,2,255,0,1,3,255,255,1,4,255,0,1,5,255,0,1,6,255,0,1,7,255,0,1,8,255,0,2,3,255,255,2,4,255,0,2,5,255,0,3,4,255,255,3,5,255,255,3,6,255,255,3,7,255,255,4,5,255,0,4,6,255,0,4,7,255,0,4,8,255,0],"secondary":false},{"width":5,"bonus":65,"chr":"r","pixels":[0,3,255,255,0,4,255,255,0,5,255,255,0,6,255,255,0,7,255,255,1,4,255,255,1,5,255,0,1,6,255,0,1,7,255,0,1,8,255,0,2,3,255,255,2,5,255,0,3,4,255,0],"secondary":false}],"width":7,"spacewidth":3,"shadow":true,"height":9,"basey":7}');
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __nested_webpack_require_21006__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __nested_webpack_require_21006__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __nested_webpack_exports__ = __nested_webpack_require_21006__("./src/buffs/index.ts");
+/******/ 	
+/******/ 	return __nested_webpack_exports__;
+/******/ })()
+;
+});
+
+/***/ }),
+
 /***/ "../node_modules/alt1/dist/chatbox/index.js":
 /*!**************************************************!*\
   !*** ../node_modules/alt1/dist/chatbox/index.js ***!
@@ -10544,6 +10986,76 @@ module.exports = __webpack_require__.p + "icon.png";
 
 /***/ }),
 
+/***/ "./img/Aura-noborder.data.png":
+/*!************************************!*\
+  !*** ./img/Aura-noborder.data.png ***!
+  \************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports=(__webpack_require__(/*! alt1/base */ "../node_modules/alt1/dist/base/index.js").ImageDetect).imageDataFromBase64("iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAMAAADzN3VRAAAAPFBMVEUAAAFrUh+qizeQcjRjLRLDmjmDDiiJVBAUFx9oCAYyKz1PNQ8zPjYjJS9vPRmzJSA4QERPFyovLjAYIy7OChkYAAAA7klEQVR4Xm3S2W6FMAxFUZ9jOyN0/P9/rZ2k0233QxAsmUgEmdPs6SuRdTGbU2Y+l10VVYmWyQJ3aCQKKMikJUI4grAWgi4pCbQe1LLQ5+5S43FCsc5712jWO2QLrBg5ruwmS6G7hFQBEfCyGkF0IEUAbSPhUAOgS1TRroRD7+1b9KdcISp17fMg+boj7r/krTVfIup/ZtzPPu1R9MwAbfwrAMhvGiSA/Q2I1550ZYO9U/YMUax3v3fs6y5ngkoxbydaMfiWKjQ69MQCSA7YIgIKEdF92nWfdlIESBUkB6TMoLAa+rns/+r8b4+ZzQ99MROBbEHrQgAAAABJRU5ErkJggg==")
+
+/***/ }),
+
+/***/ "./img/Bonfire_Boost-noborder.data.png":
+/*!*********************************************!*\
+  !*** ./img/Bonfire_Boost-noborder.data.png ***!
+  \*********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports=(__webpack_require__(/*! alt1/base */ "../node_modules/alt1/dist/base/index.js").ImageDetect).imageDataFromBase64("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")
+
+/***/ }),
+
+/***/ "./img/Darkness-noborder.data.png":
+/*!****************************************!*\
+  !*** ./img/Darkness-noborder.data.png ***!
+  \****************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports=(__webpack_require__(/*! alt1/base */ "../node_modules/alt1/dist/base/index.js").ImageDetect).imageDataFromBase64("iVBORw0KGgoAAAANSUhEUgAAABcAAAAMCAYAAACJOyb4AAAAAW5vUEUAYtdMlAAAAARub1BFAAAAAEEgjiIAAAAJbm9QRQAAAAAAAAAAAKGKctUAAAKuSURBVDhPVZLvSxNxHMcPhN02N52bu92v7dx2d9va3Tl1U1s5k2VLUCFKarkgSJ/0oHyYFEYoRFAR+KQgIkF6EEH/Rf0DpRiC2Q8KAkNC6Nk7vp/9SB+8+Xw/n8/7/freHcdJoRyU7mFo4TL0yBQsZRYj+i2IfA4V5RWqyY+oJj806gYuUz0q5mP+U8ZdpKXz0IQxqOEiODHkIBo+gR5hHI56FZX0YzLOmVu4Zm5iztykmmg/i2ggj4xeQjRQoP7wfs7Yolw5vYKscglxoQIuGi4SPCPP4HT6PhnmjXe4kf5EupnZhtrZj2PmKKknPNQ6S34HC5ntlnfeeE/58fQDWHINXDxcQUo6hxF9kRa9gSoWs9ukO9YuFP8AMkYJaf0kJG8Ofq9GNaHlYSSGaX/b2m1lcoEqcUrGErikMIGCdh0i30fDZeczlp0dUtw7ioQ2gKhs0wUM3BR7ck11aM98zQzLMw7jcbo4ibK5QoNC8Aoe9n8hPRn4AaXbhipZSPYMIuhOHYGz3kwUEVNsJJUi+R81soVgjXicrV5EoqNMzergN6wOfSfFvSUoYhaqlIXs7TsCbkr29iMqW4jJNvlXh/7nCX48vtB4jRyejf7E01JdEVcvwbXuAnyeGPwera5DcJ83hmiIfTaL/M0s4xB8zLhHhwjv4MWZX6S1yh7kUBaqaMPn1uDzaFRbFzT65jwRK0ARbLys7LUYjMeVU8t1uMvB+vRvrE/v4fnEV4jBLAJuHaprEnbbGiR+uA5riPVsrrqmEHAbkMMW5ViecQQGHzOXWvDXF/ZJb2b+QPTZ6PKYEHgb+ba/yLdtoNOjE5hV1rM52wc9KfrnWY4YM/vE48qp+p8S4XvxtnZQ1+wBIu0WOtrjBGM7gc+g02M04Ab1bM76ro4kwVv52gHt/gHjl+aC7eQxQAAAAABJRU5ErkJggg==")
+
+/***/ }),
+
+/***/ "./img/Elder_Overload-noborder.data.png":
+/*!**********************************************!*\
+  !*** ./img/Elder_Overload-noborder.data.png ***!
+  \**********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports=(__webpack_require__(/*! alt1/base */ "../node_modules/alt1/dist/base/index.js").ImageDetect).imageDataFromBase64("iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAACW0lEQVR4nLXUXU/aUBgHcDKZiG5wgNoWocIUwjullNeKoDhQRkEEURkbKkSXbHFbFi+WbNkn2C73NfYV/ztQLr1ApE/y5JyepM+v5zwnNRhmjH+/C3j96QbR7AFmfefRoeaT+PsrBSnj1w/xyTWUL09hCUk6It3PcLeuYQnqhPjECnzf/sB9MoS7/UEfxC9W4Wzdgi2pcNbeUuhm8ZA3R4u/GcC4ZAIbzMJ1fI01s22xkHf4He7GFUwvHfCUunDW3y0e2ZaP4Fb7EE5v4Ol/gdm1tfjjCog1eEc/sH37E9ZQUp/GBzJNCL2vk9tljaQXj4RjhxDOPoKrnOO51UGbfqXDzRrcY6M1BKMcYdnOwtO7A3fYWxzkK7ThfX8PoTOCXdrF8uYWPBd3cKkD2BKFp0NCfQC+NQJfvwRf7cIm5mB8FcTG2R345ghsvgLLU/vD0UKcegmu2gdX7sAYy4JrDLW1gw7YUhNEKmIpEJ8fchQbWD+4AHt4TqEuzGEZvHoFZ70/6Qm3dwJHrgoSz2GFFR4PkXQZRC6BJIqwyWUwuw0w5TaY0jGdq2B26mCyFdjFIlZ9Igzr7ByIvA+SokmLkCRNUaEjRSNZkLiiPUczIKEUlja2YeBc8x0ZSe9PdkJSJa2wVASJ5emaomWUgiGZIl4YGH5OJLlHAZrjUdqZIooGidMMJjXEwc2HsOL+FKHFJUWbR3JTRJkcFQlMkaeE1Z/QdjAumt7Tvn7cl2ge1oCEVX8cz+xzNP2hMLFumJybIOHUpA8kKGN5KwyDxa7PH9m4ZsE4V14wMwP/AQrLFqu9Xs6/AAAAAElFTkSuQmCC")
+
+/***/ }),
+
+/***/ "./img/Prayer_Renew_Active-noborder.data.png":
+/*!***************************************************!*\
+  !*** ./img/Prayer_Renew_Active-noborder.data.png ***!
+  \***************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports=(__webpack_require__(/*! alt1/base */ "../node_modules/alt1/dist/base/index.js").ImageDetect).imageDataFromBase64("iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAMAAADzN3VRAAABZVBMVEUAAAAAAACSw+RCVWtcdpBejKubwdycxeOkzurE5Pnd8v7i9P79/v9BXnlhfZR6tNuKutxdeZRdg6IzQ1NggZ02S2NqhJxuqc1zpMVBSFx8steDstSGqsWKrsojLUKRtdApNkaTs82TvNqWyemayupLbIVOXG1SbYSn0O212vS43PS94fhacovV7v1bboNbfpvp9v/r+P8sPlVwj6xkeI9lmb9oe409U2hrncNrpclsj6hslLRum7hAQ0omMkJwp88oNEl0k693mLR5m7kbIzN7lax7pMFCW3V9qciApcOBn7mBr9GDrc5DVWeEt9uFutxETmOGv+KJvOBFZH5JU2iLsc6Nw+WOtdAfIy4tOEpPaH0tQlNSdpWYvNmavNVTfpRTfphVcISgyeVZhqkxNUmo0u6p1vIyRFgfKTg1TF6+4PXA4PU1T1fJ5/rN6PoYHirZ7/03WWk8SmA9UWdhf5jz+/9il7cKt0LjAAAAAXRSTlMAQObYZgAAARZJREFUeF5t0GVvxDAMBuA5ZTpmZuYbMzMzMzP//klrc0u68xdbfvTKkjvIArBUAfCCApdgK7UjcKG6sn3WXhR5xU4KAOiNRTY7AAkVTJZPGvZ3bjDRMOPjL97xigQtkcqj8bt/BFlfSq4/rQ1mzVSJCoUvVc4dzftNp6DnO/ksFwOnMYBf8CwZBMBMrOcCY6MGOKP9ty1qDCQO9zA4+NmNyF8qhKGzOiIGu0r+FmUMaDiukCSeh7VHTAa4OW+yXFPurd70EPVXT5wXpZqqlvN8fCpDCtNctF0rqiqh4Bx7SQrETvrEh1epaOXeXoB+4QG7ZS2g5bB7ErBgWtV6hQWO2cRAUCR9PP2BEzQNhyy7GEzU7dThB1pnInoOZsa8AAAAAElFTkSuQmCC")
+
+/***/ }),
+
+/***/ "./img/Soul_Split-noborder.data.png":
+/*!******************************************!*\
+  !*** ./img/Soul_Split-noborder.data.png ***!
+  \******************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports=(__webpack_require__(/*! alt1/base */ "../node_modules/alt1/dist/base/index.js").ImageDetect).imageDataFromBase64("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")
+
+/***/ }),
+
+/***/ "./img/corruption.data.png":
+/*!*********************************!*\
+  !*** ./img/corruption.data.png ***!
+  \*********************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+module.exports=(__webpack_require__(/*! alt1/base */ "../node_modules/alt1/dist/base/index.js").ImageDetect).imageDataFromBase64("iVBORw0KGgoAAAANSUhEUgAAABcAAAAMCAYAAACJOyb4AAAAAW5vUEUAYtdMlAAAAARub1BFAAAAAEEgjiIAAAAJbm9QRQAAAAAAAAAAAKGKctUAAALJSURBVDhPbY9NbxtVGIXnZ0CbOB7fmXvnTmLj2nUSt57PpE6cisSm+U7cNgp1i4AoouomFY0EXRTotn8BiQULduyQ2MMGaAUt0KRR4V881dxJoqrq4ui9955znnfG8t4R6Hcd9BkXfVahhzR62EcXxtAjFeqLk3R/Cln5PWD1t4CV19T7OaS+0kQXK+jhMfTwqOn7ZxX+GYmVQz38E2Chgi5W8Yo1PLuO5zSQ5YDg/jT9PwKjzccB0TfTqPcCPGc8zxVrpmf6GWfIx8rAZusxVNt1dKmBJybwRBPlXEC5Ldygw9aTkK0ngZEbzKFky/iemMzzpUbeH8mXWLpQPoV6dgadRIkcqNwQqWKkSnGCeW7+GTI4lhPOm3cpY5NTboAn8kXZx+liHctskePULrXw5EUTUsdA6U0j9QyuP4OIrvDx05BPMv0VIuJFpD+L1JfynEpRx4s82aI+08LS9nlUNWb3aYRbn0XpKZRum6I7Ooc79j5ueR6RrrP7LGL378hMkW7glBdyf/Qy0u+g/Lbpu+c7JmNlvyLHZ7jzT8Tad7M4yRJOnGkNkWwgkk1K6VXs7oA7/0ansnsD8y6SPiJZx4lWcaJl3HSJ/g9tw7M8N0BOXGbvecTe85i7Zp4oZu8gP2fvuRe/PXuQZU+8XJaSCW5zgf3DmP0XMfcO3i7jH8Zs/dg9Pe+/mXkte+8wxpJqGqfZ48sXMd1HH1AK+5TCa9jRNsX4JoW5HW7/0uH+UUz/+0WG0h0zs/tnv3aMn+Xs6EPs4Dql8CrdR1cMz5JeG3eixxfPUkrNdUR1ldK5TezadYrNARvfLvPgZcznj9sMR59SGL9lZnZ/8DIx/kjzBnbtmumZ/uS64VmunsWtzFNJezjVJUR1LYc3tqht3+Dh/wlfH03hLOxQmPiIQuOWmWJhh6+Opnj4X0Jte2DypXN90xfVZcppj1dJvBR5apeGQwAAAABJRU5ErkJggg==")
+
+/***/ }),
+
 /***/ "./index.html":
 /*!********************!*\
   !*** ./index.html ***!
@@ -10710,12 +11222,14 @@ var __webpack_exports__ = {};
   !*** ./index.ts ***!
   \******************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! alt1 */ "../node_modules/alt1/dist/base/index.js");
+/* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! alt1/base */ "../node_modules/alt1/dist/base/index.js");
 /* harmony import */ var alt1__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(alt1__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var alt1_chatbox__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! alt1/chatbox */ "../node_modules/alt1/dist/chatbox/index.js");
 /* harmony import */ var alt1_chatbox__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(alt1_chatbox__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var alt1_ability__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! alt1/ability */ "../node_modules/alt1/dist/ability/index.js");
 /* harmony import */ var alt1_ability__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(alt1_ability__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var alt1_buffs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! alt1/buffs */ "../node_modules/alt1/dist/buffs/index.js");
+/* harmony import */ var alt1_buffs__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(alt1_buffs__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var string_similarity__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! string-similarity */ "../node_modules/string-similarity/src/index.js");
 /* harmony import */ var string_similarity__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(string_similarity__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! socket.io-client */ "../node_modules/socket.io-client/build/esm/index.js");
@@ -10723,6 +11237,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _appconfig_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./appconfig.json */ "./appconfig.json");
 /* harmony import */ var _icon_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icon.png */ "./icon.png");
 /* harmony import */ var _css_style_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./css/style.css */ "./css/style.css");
+var __assign = (undefined && undefined.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __rest = (undefined && undefined.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -10734,6 +11259,8 @@ var __rest = (undefined && undefined.__rest) || function (s, e) {
         }
     return t;
 };
+
+
 
 
 
@@ -10828,6 +11355,15 @@ else {
     var addappurl = "alt1://addapp/".concat(new URL("./appconfig.json", document.location.href).href);
     document.querySelector("body").innerHTML = "Alt1 not detected, click <a href='".concat(addappurl, "'>here</a> to add this app to Alt1");
 }
+var currData = {
+    elderOverload: false,
+    darkness: false,
+    aura: false,
+    bonfireBoost: false,
+    prayerRenewActive: false,
+    soulSplit: false,
+    corruption: false,
+};
 // ################# Chatbox reader area #################
 var chatBoxColor = alt1__WEBPACK_IMPORTED_MODULE_6__.mixColor(105, 105, 105);
 var reader = new (alt1_chatbox__WEBPACK_IMPORTED_MODULE_7___default())();
@@ -10935,50 +11471,66 @@ var findBar = setInterval(function () {
         alt1.overLayRect(actionBarColor, actionbar.pos.x, actionbar.pos.y, 400, 30, 2000, 3);
         setInterval(function () {
             readBar();
-        }, 500);
+        }, 600);
     }
 }, 1000);
 function readBar() {
-    pushActionBar(actionbar.read());
+    // pushActionBar(actionbar.read());
+    var data = __assign(__assign({}, actionbar.read()), { buffs: currData });
+    pushActionBar(data);
 }
 // ################# buffs reader area #################
-// const buffBarColor = a1lib.mixColor(4, 192, 0);
-// const buffs = new BuffReader();
-// buffs.debuffs = false;
-// var buffImages = a1lib.webpackImages({
-//   elderOverload: require("./img/Elder_Overload-noborder.data.png"),
-//   darkness: require("./img/Darkness-noborder.data.png"),
-//   aura: require("./img/Aura-noborder.data.png"),
-//   bonfireBoost: require("./img/Bonfire_Boost-noborder.data.png"),
-//   prayerRenewActive: require("./img/Prayer_Renew_Active-noborder.data.png"),
-//   soulSplit: require("./img/Soul_Split-noborder.data.png"),
-// });
-// let findBuffs = setInterval(function () {
-//   if (!window.alt1) {
-//     clearInterval(findBuffs);
-//     return;
-//   }
-//   if (buffs.pos === null) buffs.find();
-//   else {
-//     clearInterval(findBuffs);
-//     alt1.overLayRect(buffBarColor, buffs.pos.x, buffs.pos.y, 300, 80, 2000, 2);
-//     setInterval(function () {
-//       readBuffs();
-//     }, 1000);
-//   }
-// }, 1000);
-// function readBuffs() {
-//   const buffsReader = buffs.read();
-//   for (let testid in buffImages.raw) {
-//     let img = new ImgRefData(buffImages[testid]);
-//     let imgdata = img.toData();
-//     imgdata.show();
-//     let reader = new BuffReader();
-//     reader.debuffs = false;
-//     let pos = reader.find(img);
-//     console.log(pos);
-//   }
-// }
+var buffBarColor = alt1__WEBPACK_IMPORTED_MODULE_6__.mixColor(4, 192, 0);
+var buffs = new (alt1_buffs__WEBPACK_IMPORTED_MODULE_9___default())();
+buffs.debuffs = false;
+var buffImages = alt1__WEBPACK_IMPORTED_MODULE_6__.webpackImages({
+    elderOverload: __webpack_require__(/*! ./img/Elder_Overload-noborder.data.png */ "./img/Elder_Overload-noborder.data.png"),
+    darkness: __webpack_require__(/*! ./img/Darkness-noborder.data.png */ "./img/Darkness-noborder.data.png"),
+    aura: __webpack_require__(/*! ./img/Aura-noborder.data.png */ "./img/Aura-noborder.data.png"),
+    bonfireBoost: __webpack_require__(/*! ./img/Bonfire_Boost-noborder.data.png */ "./img/Bonfire_Boost-noborder.data.png"),
+    prayerRenewActive: __webpack_require__(/*! ./img/Prayer_Renew_Active-noborder.data.png */ "./img/Prayer_Renew_Active-noborder.data.png"),
+    soulSplit: __webpack_require__(/*! ./img/Soul_Split-noborder.data.png */ "./img/Soul_Split-noborder.data.png"),
+    corruption: __webpack_require__(/*! ./img/corruption.data.png */ "./img/corruption.data.png"),
+});
+var findBuffs = setInterval(function () {
+    if (!window.alt1) {
+        clearInterval(findBuffs);
+        return;
+    }
+    if (buffs.pos === null)
+        buffs.find();
+    else {
+        clearInterval(findBuffs);
+        alt1.overLayRect(buffBarColor, buffs.pos.x, buffs.pos.y, 300, 80, 2000, 2);
+        setInterval(function () {
+            readBuffs();
+        }, 1000);
+    }
+}, 1000);
+function readBuffs() {
+    var buffsReader = buffs.read();
+    var threshold = 100;
+    for (var testid in buffImages) {
+        var img = new alt1__WEBPACK_IMPORTED_MODULE_6__.ImgRefData(buffImages[testid]);
+        var imgdata = img.toData();
+        imgdata.show();
+        var found = false;
+        for (var _i = 0, buffsReader_1 = buffsReader; _i < buffsReader_1.length; _i++) {
+            var buff = buffsReader_1[_i];
+            var result = buff.countMatch(imgdata, false);
+            if (result.passed > threshold) {
+                found = true;
+                currData[testid] = true;
+                // console.log(`✅ '${testid}'`);
+                break;
+            }
+        }
+        if (!found) {
+            currData[testid] = false;
+            // console.log(`❌ '${testid}'`);
+        }
+    }
+}
 // ######### localStorage #########
 var STORAGE_KEY = "rdtDrops";
 function loadDropData() {
@@ -11139,7 +11691,7 @@ function loadEvents() {
 var socket;
 var token = "meu_token_secreto";
 function connectWebSocket() {
-    // const ws_url = "https://rdt-tracker-server.onrender.com"
+    // const ws_url = "https://rdt-tracker-server.onrender.com";
     var ws_url = "http://localhost:3000";
     socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_1__.io)(ws_url, {
         query: { token: token },
