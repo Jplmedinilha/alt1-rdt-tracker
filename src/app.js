@@ -485,8 +485,12 @@ const token = "meu_token_secreto";
 let socket;
 let queue = [];
 
+// const ws_url = "https://rdt-tracker-server.onrender.com";
+const ws_url = "https://rdt-tracker-server-jk22.onrender.com";
+// const ws_url = "http://10.18.60.60:3000";
+
 function connectWebSocket() {
-  socket = io("https://rdt-tracker-server.onrender.com", {
+  socket = io(ws_url, {
     query: {
       token: token,
     },
